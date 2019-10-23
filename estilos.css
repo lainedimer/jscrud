@@ -1,0 +1,27 @@
+.brand{
+    float: right;
+}
+h3{
+    text-align: center; 
+    padding: 5px; 
+    color: white;
+}
+ul{
+    list-style-type: none;
+    padding: 15px;
+}
+ul a{
+    color:white;
+}
+
+ul a:hover{
+    color:white;
+}
+
+.pos-f-t{
+    background-color: #343A40;
+}
+
+form{
+    padding: 15px;
+}
