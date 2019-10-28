@@ -34,10 +34,10 @@ brands.forEach(function(item){
 
 var tastes = [
     'Choose a taste',
-    'Amargo',
-    'Doce',
-    'Azedo',
-    'Salgado',
+    'Bitter',
+    'Sweet',
+    'Sour',
+    'Salty',
 ];   
 
 var selectTaste = document.getElementById('taste');
@@ -65,35 +65,9 @@ var clear = function(){
 
 //event submit of form
 document.querySelector('#form-beer').addEventListener("submit", function(event){
- 
-    
-/*
-    document.querySelector('#table-beer').addEventListener("click", function(event){
-        const remove = document.querySelector("#remove");
-        if(event.currentTarget.contains(remove)){    
-            var td = document.getElementsByClassName('td_name');
-        //console.log(event.target.rowIndex);
-            //var nametd = td[0].textContent;
-            console.log(td[0].cellIndex());
-            //var nametd2 = td[1].textContent;
-            console.log(nametd);
-            //console.log(nametd2);
-            
-            for(var i=0;i<beers.length;i++) {   
-                if(nametd===beers[i].name) {
-                   // console.log(beers[i].name);
-                    beers.splice(i,i+1);
-                }
-            }
-            
-        }
-        //listBeer();
-    });
-    */   
-    
-    
     addBeer();
 });
+
 var createTable = function(){
     colTable = [
         'Name',
@@ -101,9 +75,8 @@ var createTable = function(){
         'Edit',
         'Remove'
     ];
-
-    var table = document.getElementById('table-beer');
-    var tr = document.createElement('tr');
+    
+    var tr = document.getElementById('tr-beer');
     colTable.forEach(function(item){
         var th = document.createElement('th');
         var cellText = document.createTextNode(item);
@@ -111,20 +84,35 @@ var createTable = function(){
         tr.appendChild(th);
     });
 
-    table.appendChild(tr);
-    
 };
 
 function deleteBeer(name){
-    console.log(name);
+    var tbody = document.getElementById('tbody-beer');
     for(var i=0;i<beers.length;i++) {   
         if(name===beers[i].name) {
-           // console.log(beers[i].name);
             beers.splice(i,i+1);
-
+            tbody.deleteRow(i);
         }
     }
-    listBeer();
+}
+
+function editBeer(name){
+
+    for(var i=0;i<beers.length;i++) {   
+        if(name===beers[i].name) {
+            document.getElementById('name').value=beers[i].name;
+            document.getElementById('brand').value=beers[i].brand;
+            document.getElementById('style').value=beers[i].style;
+            document.getElementById('ibv').value=beers[i].ibv;
+            document.getElementById('ibu').value=beers[i].ibu;
+            document.getElementById('vol').value=beers[i].vol;
+            document.getElementById('family').value=beers[i].family;
+            document.getElementById('color').value=beers[i].color;
+            document.getElementById('taste').value=beers[i].taste;
+            document.getElementById('description').value=beers[i].description;
+        }
+    }
+    //removeList();
 }
 
 var addBeer = function(){
@@ -168,44 +156,45 @@ var addBeer = function(){
         clear();
     }  
 }
-function listBeer(){
-    console.log("entrou na listbeer");
-    var table = document.getElementById('table-beer');
+function clearTable(){
+
+}
+
+function listBeer(){//delete the table and reload
+    var tbody = document.getElementById('tbody-beer');
+    
     if(!document.getElementsByTagName('th').length){
         createTable();
     }
-    //if(!document.getElementsByTagName('tbody').length){
-        var tbody = document.createElement('tbody');
-    //}
 
-    table.appendChild(tbody);
-    if(beers.length==0){
-        console.log("remover os tr");
-    }
-    for(var i=0; i<beers.length; i++){
-        console.log("entrei no for");
-        var tr = document.createElement('tr');
-        var td_name = document.createElement('td');
-        td_name.className="td_name";
-        var td_brand = document.createElement('td');
-        var name = document.createTextNode(beers[i].name);
-        var brand = document.createTextNode(beers[i].brand);
-        td_name.appendChild(name);
-        td_brand.appendChild(brand); 
-            
-        var td_remove = document.createElement('td');
-        td_remove.innerHTML = td_remove.innerHTML+ '<button type="button" id="remove" class="btn btn-outline-danger" onclick="deleteBeer(\'' +beers[i].name+ '\')">Remove</button>';
-        var td_edit = document.createElement('td');
-        td_edit.innerHTML = td_edit.innerHTML+ '<button type="button" class="btn btn-outline-secondary" onclick="editBeer();">Edit</button>';
-         
-        tr.appendChild(td_name);
-        tr.appendChild(td_brand);
-        tr.appendChild(td_edit);
-        tr.appendChild(td_remove);
-        tbody.appendChild(tr);  
-    }
-
+    if(beers.length>0){
+        clearTable();
+        for(var i=0; i<beers.length; i++){
+                var tr = document.createElement('tr');  
+                tr.className="tr-beer";     
+                var td_name = document.createElement('td');                
+                var td_brand = document.createElement('td');
+                var td_remove = document.createElement('td');
+                var td_edit = document.createElement('td');
     
+                var name = document.createTextNode(beers[i].name);
+                var brand = document.createTextNode(beers[i].brand);   
+
+                td_name.appendChild(name);
+                td_brand.appendChild(brand); 
+                
+                td_remove.innerHTML = td_remove.innerHTML+ '<button type="button" id="remove" class="btn btn-outline-danger" onclick="deleteBeer(\'' +beers[i].name+ '\')">Remove</button>';
+                td_edit.innerHTML = td_edit.innerHTML+ '<button type="button" class="btn btn-outline-secondary" onclick="editBeer(\'' +beers[i].name+ '\')">Edit</button>';
+                 
+                tr.appendChild(td_name);
+                tr.appendChild(td_brand);
+                tr.appendChild(td_edit);
+                tr.appendChild(td_remove);
+                tbody.appendChild(tr);  
+
+        }            
+    }   
+
 }
 
 
