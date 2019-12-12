@@ -1,7 +1,7 @@
 const RESULTS_TABLE = document.getElementById('table-results');
-//const FORM_BEER = document.querySelector('#form-beer');
 const BUTTON_SAVE = document.getElementById('btn-save');
 const BUTTON_CANCEL = document.getElementById('btn-cancel');
+let id=0;
 
 const STYLES_BEER = [
     'Choose a style',
@@ -28,6 +28,7 @@ const TASTES_BEER = [
 ];
 
 const COLUMN_TABLE = [
+    'Id',
     'Name',
     'Brand',,
     'Edit',
@@ -71,17 +72,15 @@ const elementExists = function(element){
     else return false;
 }
 
-//improve code, there are similarities between the function idBeer()
-const beerExists = function(name){
+const beerExists = function(id){
     for(var i=0;i<beers.length;i++) {  
-        if(name===beers[i].name) return true;        
+        if(id===beers[i].id) return true;        
     } return false;
 }
 
-//improve code, there are similarities between the function beerExists()
-const idBeer = function(name){
+const idBeer = function(id){
     for(var i=0;i<beers.length;i++) {   
-        if(name===beers[i].name) return i;
+        if(id===beers[i].id) return i;
     }
 }
 
@@ -89,45 +88,35 @@ const deleteBeerOfObj = function(id){
     beers.splice(id,id+1);
 }
 
-const deleteBeer = function(name){
+const deleteBeer = function(id){
     let tableBodyElement = document.getElementById('tbody-beer');
-    if(elementExists(tableBodyElement) && beerExists(name)){
-        deleteBeerOfObj(idBeer(name));
+    if(elementExists(tableBodyElement) && beerExists(id)){
+        deleteBeerOfObj(idBeer(id));
         listBeer();
     }
 }
 
-const editBeer = function(name){
+const editBeer = function(id){
     for(var i=0;i<beers.length;i++) {
-        if(name===beers[i].name){
-            newBeer = beers[i];
-            document.getElementById('name').value=newBeer.name;
-            document.getElementById('brand').value=newBeer.brand;
-            document.getElementById('style').value=newBeer.style;
-            document.getElementById('ibv').value=newBeer.ibv;
-            document.getElementById('ibu').value=newBeer.ibu;
-            document.getElementById('vol').value=newBeer.vol;
-            document.getElementById('family').value=newBeer.family;
-            document.getElementById('color').value=newBeer.color;
-            document.getElementById('taste').value=newBeer.taste;
-            document.getElementById('description').value=newBeer.description;
-            return newBeer;            
+        console.log("entrei no for do editBeer");
+        if(id==beers[i].id){
+            console.log("entrei no if do editBeer");
+            document.getElementById('name').value=beers[i].name;
+            document.getElementById('brand').value=beers[i].brand;
+            document.getElementById('style').value=beers[i].style;
+            document.getElementById('ibv').value=beers[i].ibv;
+            document.getElementById('ibu').value=beers[i].ibu;
+            document.getElementById('vol').value=beers[i].vol;
+            document.getElementById('family').value=beers[i].family;
+            document.getElementById('color').value=beers[i].color;
+            document.getElementById('taste').value=beers[i].taste;
+            document.getElementById('description').value=beers[i].description;
+            return beers[i];            
         }            
     }
 }
 
-const validateFormBeer = function(){
-    if(brand==BRANDS_BEER[0]){
-        window.alert('[ERROR] Choose a brand to continue.'); return false;
-    } else if(style==STYLES_BEER[0]){
-        window.alert('[ERROR] Choose a style to continue.'); return false;
-    }else if(taste==TASTES_BEER[0]){
-        window.alert('[ERROR] Choose a taste to continue.'); return false;
-    }else return true;
-}
-
-const addBeer = function(){
-    event.preventDefault(); 
+const getBeerForm = function(id){
 
     let name = document.getElementById('name').value;
     let brand = document.getElementById('brand').value;
@@ -138,26 +127,44 @@ const addBeer = function(){
     let family = document.getElementById('family').value;
     let color = document.getElementById('color').value;
     let taste = document.getElementById('taste').value;
-    let description =  document.getElementById('description').value;
-      
-    if(validateFormBeer() && !beerExists(name)){
-        let beer = {
-            name: name,
-            brand : brand,
-            style: style,
-            ibv: ibv,
-            ibu: ibu,
-            vol: vol,
-            family: family,
-            color: color,
-            taste: taste,
-            description: description
-        };    
-        beers.push(beer);
+    let description =  document.getElementById('description').value;  
+
+    let beer = {
+        id: id,
+        name: name,
+        brand : brand,
+        style: style,
+        ibv: ibv,
+        ibu: ibu,
+        vol: vol,
+        family: family,
+        color: color,
+        taste: taste,
+        description: description
+    };  
+
+    return beer;
+}
+
+const validateFormBeer = function(){
+    if(brand==BRANDS_BEER[0]){
+        window.alert('[ERROR] Choose a brand to continue.'); return false;
+    }else if(style==STYLES_BEER[0]){
+        window.alert('[ERROR] Choose a style to continue.'); return false;
+    }else if(taste==TASTES_BEER[0]){
+        window.alert('[ERROR] Choose a taste to continue.'); return false;
+    }else return true;
+}
+
+const addBeer = function(){
+    event.preventDefault();     
+    id +=1;
+    if(validateFormBeer() && !beerExists(getBeerForm().id)){ 
+        beers.push(getBeerForm(id));
         listBeer();
         clearFormBeer();
     }else{
-        console.log(editBeer(name));
+        console.log(editBeer(getBeerForm().id));
     }
 }
 
@@ -197,19 +204,23 @@ const createTableBodyContent = function(){
     for(var i=0; i<beers.length; i++){
 
         let tr = document.createElement('tr'); 
+        let tdId = document.createElement('td');
         let tdName = document.createElement('td');
         let tdBrand = document.createElement('td');
         let tdEdit = document.createElement('td');
         let tdRemove = document.createElement('td');
 
+        let idBeer = document.createTextNode(beers[i].id);
         let name = document.createTextNode(beers[i].name);
         let brand = document.createTextNode(beers[i].brand);   
         
+        tdId.appendChild(idBeer);
         tdName.appendChild(name);
         tdBrand.appendChild(brand); 
-        tdEdit.innerHTML = tdEdit.innerHTML+ '<button type="button" id="remove" class="btn btn-outline-danger" onclick="deleteBeer(\'' +beers[i].name+ '\')">Remove</button>';
-        tdRemove.innerHTML = tdRemove.innerHTML+ '<button type="button" class="btn btn-outline-secondary" onclick="editBeer(\'' +beers[i].name+ '\')">Edit</button>';
+        tdEdit.innerHTML = tdEdit.innerHTML+ '<button type="button" id="remove" class="btn btn-outline-danger" onclick="deleteBeer(\'' +beers[i].id+ '\')">Remove</button>';
+        tdRemove.innerHTML = tdRemove.innerHTML+ '<button type="button" class="btn btn-outline-secondary" onclick="editBeer(\'' +beers[i].id+ '\')">Edit</button>';
         
+        tr.appendChild(tdId);
         tr.appendChild(tdName);
         tr.appendChild(tdBrand);
         tr.appendChild(tdEdit);
@@ -220,7 +231,6 @@ const createTableBodyContent = function(){
 }
 
 const listBeer = function(){
-
     if(elementExists(document.getElementsByTagName('th'))){
         clearResultsTable();
     }
