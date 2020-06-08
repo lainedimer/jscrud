@@ -1,5 +1,6 @@
 const RESULTS_TABLE = document.getElementById('table-results');
 const BUTTON_SAVE = document.getElementById('btn-save');
+const BUTTON_UPDATE = document.getElementById('btn-update');
 const BUTTON_CANCEL = document.getElementById('btn-cancel');
 let id=0;
 
@@ -31,7 +32,7 @@ const COLUMN_TABLE = [
     'Id',
     'Name',
     'Brand',,
-    'Edit',
+    'Update',
     'Remove'
 ];
 
@@ -55,6 +56,7 @@ optionsOfSelect(selectBrand, BRANDS_BEER);
 
 const clearFormBeer = function(){
     event.preventDefault();  
+    document.getElementById('id-beer').value="";
     document.getElementById('name').value="";
     document.getElementById('brand').value=BRANDS_BEER[0];
     document.getElementById('style').value=STYLES_BEER[0];
@@ -93,14 +95,14 @@ const deleteBeer = function(id){
     if(elementExists(tableBodyElement) && beerExists(id)){        
         deleteBeerOfObj(idBeer(id));
         listBeer();
+        clearFormBeer();
     }
 }
 
-const editBeer = function(id){
-    for(var i=0;i<beers.length;i++) {
-        console.log("entrei no for do editBeer");
+const formBeerId = function(id){
+    for(var i=0;i<beers.length;i++) {        
         if(id==beers[i].id){
-            console.log("entrei no if do editBeer");
+            document.getElementById('id-beer').value=beers[i].id;
             document.getElementById('name').value=beers[i].name;
             document.getElementById('brand').value=beers[i].brand;
             document.getElementById('style').value=beers[i].style;
@@ -112,12 +114,22 @@ const editBeer = function(id){
             document.getElementById('taste').value=beers[i].taste;
             document.getElementById('description').value=beers[i].description;
             return beers[i];            
-        }            
+        }      
     }
+}
+
+const updateBeer = function(){
+    event.preventDefault();
+    idCurrentBeer = document.getElementById('id-beer').value;    
+    deleteBeer(idCurrentBeer)
+    beers.push(getBeerForm(idCurrentBeer));
+    listBeer();
+    clearFormBeer();     
 }
 
 const getBeerForm = function(id){
 
+    // let id = document.getElementById('id-beer');
     let name = document.getElementById('name').value;
     let brand = document.getElementById('brand').value;
     let style = document.getElementById('style').value;
@@ -164,7 +176,7 @@ const addBeer = function(){
         listBeer();
         clearFormBeer();
     }else{
-        console.log(editBeer(getBeerForm().id));
+        window.alert('[ERROR]');
     }
 }
 
@@ -207,7 +219,7 @@ const createTableBodyContent = function(){
         let tdId = document.createElement('td');
         let tdName = document.createElement('td');
         let tdBrand = document.createElement('td');
-        let tdEdit = document.createElement('td');
+        let tdUpdate = document.createElement('td');
         let tdRemove = document.createElement('td');
 
         let idBeer = document.createTextNode(beers[i].id);
@@ -217,13 +229,13 @@ const createTableBodyContent = function(){
         tdId.appendChild(idBeer);
         tdName.appendChild(name);
         tdBrand.appendChild(brand); 
-        tdEdit.innerHTML = tdEdit.innerHTML+ '<button type="button" id="remove" class="btn btn-outline-danger" onclick="deleteBeer(\'' +beers[i].id+ '\')">Remove</button>';
-        tdRemove.innerHTML = tdRemove.innerHTML+ '<button type="button" class="btn btn-outline-secondary" onclick="editBeer(\'' +beers[i].id+ '\')">Edit</button>';
+        tdUpdate.innerHTML = tdUpdate.innerHTML+ '<button type="button" id="update" class="btn btn-outline-danger" onclick="formBeerId(\'' +beers[i].id+ '\')">Update</button>';
+        tdRemove.innerHTML = tdRemove.innerHTML+ '<button type="button" id="remove" class="btn btn-outline-secondary" onclick="deleteBeer(\'' +beers[i].id+ '\')">Remove</button>';
         
         tr.appendChild(tdId);
         tr.appendChild(tdName);
         tr.appendChild(tdBrand);
-        tr.appendChild(tdEdit);
+        tr.appendChild(tdUpdate);
         tr.appendChild(tdRemove);
 
         tableBodyElement.appendChild(tr); 
@@ -240,6 +252,10 @@ const listBeer = function(){
 
 BUTTON_SAVE.addEventListener("click", function (event) {
     addBeer();
+});
+
+BUTTON_UPDATE.addEventListener("click", function (event) {
+    updateBeer();
 });
 
 BUTTON_CANCEL.addEventListener("click", function (event) {
