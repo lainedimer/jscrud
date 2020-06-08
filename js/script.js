@@ -73,24 +73,24 @@ const elementExists = function(element){
 }
 
 const beerExists = function(id){
-    for(var i=0;i<beers.length;i++) {  
-        if(id===beers[i].id) return true;        
+    for(var i=0;i<beers.length;i++) {
+        if(id==beers[i].id) return true;        
     } return false;
 }
 
 const idBeer = function(id){
     for(var i=0;i<beers.length;i++) {   
-        if(id===beers[i].id) return i;
+        if(id==beers[i].id) return i;
     }
 }
 
-const deleteBeerOfObj = function(id){
+const deleteBeerOfObj = function(id){    
     beers.splice(id,id+1);
 }
 
 const deleteBeer = function(id){
     let tableBodyElement = document.getElementById('tbody-beer');
-    if(elementExists(tableBodyElement) && beerExists(id)){
+    if(elementExists(tableBodyElement) && beerExists(id)){        
         deleteBeerOfObj(idBeer(id));
         listBeer();
     }
